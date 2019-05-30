@@ -1,0 +1,21 @@
+---
+driver:
+  name: terraform
+
+provisioner:
+  name: terraform
+
+verifier:
+  name: terraform
+  systems:
+    - name: basic
+      backend: local
+      attrs_outputs:
+        client_vpn_endpoint : client_vpn_endpoint
+        client_vpn_network_association : client_vpn_network_association
+
+platforms:
+  - name: terraform
+
+suites:
+  - name: default
