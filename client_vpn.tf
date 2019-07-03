@@ -32,15 +32,15 @@ resource "null_resource" "authorize" {
   provisioner "local-exec" {
     command = "echo -ne '\n' | aws ec2 authorize-client-vpn-ingress --client-vpn-endpoint-id ${aws_ec2_client_vpn_endpoint.Virginia.id} --target-network-cidr 0.0.0.0/0 --authorize-all-groups"
   }
-  depends_on = ["${aws_ec2_client_vpn_network_association.association}"]
+  depends_on = [aws_ec2_client_vpn_network_association.association]
 }
 
 // export vpn config
 resource "null_resource" "config" {
   provisioner "local-exec" {
-    command = "aws ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id ${aws_ec2_client_vpn_endpoint.Virginia.id} >> config-cvpn.ovpn"
+    command = "aws ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id ${aws_ec2_client_vpn_endpoint.Virginia.id} | jq -j --arg sep \"$sep\" 'join($sep)' >> config-cvpn.ovpn"
   }
-  depends_on = ["${aws_ec2_client_vpn_network_association.association}"]
+  depends_on = [aws_ec2_client_vpn_network_association.association]
 }
 
 // add client vpn route
@@ -48,7 +48,5 @@ resource "null_resource" "route" {
   provisioner "local-exec" {
     command = "aws ec2 create-client-vpn-route --client-vpn-endpoint-id ${aws_ec2_client_vpn_endpoint.Virginia.id} --destination-cidr-block ${var.destination_cidr_block} --target-vpc-subnet-id ${var.destination_subnet}"
   }
-  depends_on = ["${aws_ec2_client_vpn_network_association.association}"]
+  depends_on = [aws_ec2_client_vpn_network_association.association]
 }
-
-
