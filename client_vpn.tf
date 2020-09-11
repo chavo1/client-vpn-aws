@@ -1,19 +1,19 @@
 // We need an AWS credentials
 provider "aws" {
-  access_key = "${var.access_key}"
-  secret_key = "${var.secret_key}"
-  region     = "${var.region}"
+  access_key = var.access_key
+  secret_key = var.secret_key
+  region     = var.region
 }
 
 // client_vpn_endpoint
 resource "aws_ec2_client_vpn_endpoint" "Virginia" {
   description            = "clientvpn"
-  server_certificate_arn = "${var.server_certificate_arn}"
-  client_cidr_block      = "${var.client_cidr_block}"
+  server_certificate_arn = var.server_certificate_arn
+  client_cidr_block      = var.client_cidr_block
 
   authentication_options {
     type                       = "certificate-authentication"
-    root_certificate_chain_arn = "${var.root_certificate_chain_arn}"
+    root_certificate_chain_arn = var.root_certificate_chain_arn
   }
 
   connection_log_options {
@@ -23,8 +23,8 @@ resource "aws_ec2_client_vpn_endpoint" "Virginia" {
 
 // associate vpn network
 resource "aws_ec2_client_vpn_network_association" "association" {
-  client_vpn_endpoint_id = "${aws_ec2_client_vpn_endpoint.Virginia.id}"
-  subnet_id              = "${var.vpc_subnet}"
+  client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.Virginia.id
+  subnet_id              = var.vpc_subnet
 }
 
 // authorize client vpn ingress with awscli
