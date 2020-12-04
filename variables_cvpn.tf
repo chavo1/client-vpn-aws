@@ -1,8 +1,3 @@
-# aws credentials
-variable "access_key" {}
-variable "secret_key" {}
-variable "region" {}
-
 # vpc subnet 
 variable "vpc_subnet" {}
 
